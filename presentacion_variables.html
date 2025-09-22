@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Variables - Sistemas de Orientación Profesional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298, #6dd5ed, #ffffff);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .slide {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transform: translateY(50px);
+            animation: slideIn 0.8s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide:nth-child(1) { animation-delay: 0.1s; }
+        .slide:nth-child(2) { animation-delay: 0.3s; }
+        .slide:nth-child(3) { animation-delay: 0.5s; }
+        .slide:nth-child(4) { animation-delay: 0.7s; }
+        .slide:nth-child(5) { animation-delay: 0.9s; }
+        .slide:nth-child(6) { animation-delay: 1.1s; }
+        .slide:nth-child(7) { animation-delay: 1.3s; }
+
+        .title-slide {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title-slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: patternMove 20s linear infinite;
+        }
+
+        @keyframes patternMove {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(10px) translateY(10px); }
+        }
+
+        .title-slide > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }
+            to { text-shadow: 2px 2px 20px rgba(255, 255, 255, 0.5); }
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            border-radius: 2px;
+            animation: underlineExpand 1s ease 0.5s forwards;
+        }
+
+        @keyframes underlineExpand {
+            to { width: 100%; }
+        }
+
+        h3 {
+            color: #34495e;
+            font-size: 1.5em;
+            margin: 20px 0 15px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        h3::before {
+            content: '▶';
+            color: #f39c12;
+            margin-right: 10px;
+            font-size: 0.8em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .system-card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.1) 50%, transparent 51%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .system-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .pathfinder { border-left-color: #3498db; }
+        .cprm { border-left-color: #e74c3c; }
+        .pcrs { border-left-color: #2ecc71; }
+        .summary { border-left-color: #f39c12; }
+
+        .system-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .variable-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .variable-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .variable-item:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-var {
+            border-left: 4px solid #3498db;
+        }
+
+        .output-var {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .variable-item strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .note-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 1px solid #f39c12;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .note-box::before {
+            content: '💡';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #f39c12;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .note-box strong {
+            color: #d68910;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .summary-column {
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-column h4 {
+            color: #2c3e50;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-align: center;
+            padding: 10px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .summary-list {
+            list-style: none;
+        }
+
+        .summary-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .summary-list li::before {
+            content: '●';
+            position: absolute;
+            left: 0;
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .summary-list li:hover {
+            background: rgba(52, 152, 219, 0.1);
+            padding-left: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .slide {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .variable-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animación de entrada para elementos */
+        .fade-in {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Efecto de partículas de fondo */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <!-- Slide de Título -->
+        <div class="slide title-slide">
+            <h1>ANÁLISIS DE LAS VARIABLES</h1>
+            <div class="subtitle">Sistemas de Orientación Profesional Inteligente</div>
+            <div class="subtitle">Robótica e Inteligencia Artificial</div>
+        </div>
+
+        <!-- Pathfinder System -->
+        <div class="slide">
+            <h2>Variables del Sistema Pathfinder</h2>
+            <div class="subtitle">(Plataforma de Orientación Profesional Inteligente)</div>
+            
+            <div class="system-card pathfinder">
+                <h3>VARIABLES DE ENTRADA (Input)</h3>
+                <div class="variable-list">
+                    <div class="variable-item input-var">
+                        <strong>Respuestas del Cuestionario de Intereses:</strong>
+                        Las respuestas proporcionadas por el estudiante a un cuestionario personalizado basado en intereses
+                    </div>
+                    <div class="variable-item input-var">
+                        <strong>Respuestas del Cuestionario de Carrera (Career Quiz Responses):</strong>
+                        Un cuestionario personalizado, diseñado con lógica de árbol de decisión, mapea las respuestas del estudiante a grupos de carreras adecuados
+                    </div>
+                    <div class="variable-item input-var">
+                        <strong>Consultas Predefinidas (Pre-defined Queries):</strong>
+                        El chatbot, que es la interfaz conversacional, utiliza lógica basada en reglas y responde a consultas predefinidas como "Mejores carreras después del grado 12" o "Mejores universidades para ingeniería"
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pathfinder Output -->
+        <div class="slide">
+            <div class="system-card pathfinder">
+                <h3>VARIABLES DE SALIDA</h3>
+                <div class="variable-list">
+                    <div class="variable-item output-var">
+                        <strong>Opciones de carrera</strong>
+                    </div>
+                    <div class="variable-item output-var">
+                        <strong>Detalles sobre las opciones de carrera:</strong>
+                        calificaciones requeridas (eligibilidad)
+                    </div>
+                    <div class="variable-item output-var">
+                        <strong>Principales instituciones (Top institutions)</strong>
+                    </div>
+                    <div class="variable-item output-var">
+                        <strong>Alcance futuro (Future scope)</strong>
+                    </div>
+                    <div class="variable-item output-var">
+                        <strong>Expectativas salariales (Salary expectations/range)</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CPRM System Input -->
+        <div class="slide">
+            <h2>Variables del Modelo CPRM</h2>
+            <div class="subtitle">(Recomendación de Ruta Profesional Personalizada para Estudiantes de TI en Indonesia)</div>
+            
+            <div class="system-card cprm">
+                <h3>VARIABLES DE ENTRADA</h3>
+                <div class="variable-list">
+                    <div class="variable-item input-var">
+                        <strong>1. Perfiles de Trabajo (Job Profiles/Career Information):</strong>
+                        Título del trabajo y Habilidades requeridas (Required skills)
+                    </div>
+                    <div class="variable-item input-var">
+                        <strong>2. Tipos de Personalidad (Personality Types):</strong>
+                        Identificado mediante el test MBTI (Myers-Briggs Type Indicator), un cuestionario psicológico de 52 ítems
+                    </div>
+                    <div class="variable-item input-var">
+                        <strong>3. Materias/Perfiles de Asignaturas (Subject Profiles/Subject Information):</strong>
+                        Materias optativas y sus Materiales de aprendizaje (Learning materials) contenidos en el currículo de la carrera de informática
+                    </div>
+                </div>
+
+                <div class="note-box">
+                    <strong>NOTA:</strong> Estos perfiles se extraen de portales de anuncios de empleo utilizando la técnica de web scraper y se analizan con el algoritmo de clustering jerárquico de enlace promedio (ALHC)
+                </div>
+
+                <p>El Perfil del Estudiante también se construye utilizando el tipo de personalidad MBTI y la preferencia del usuario por las materias recomendada</p>
+            </div>
+        </div>
+
+        <!-- CPRM Output -->
+        <div class="slide">
+            <div class="system-card cprm">
+                <h3>VARIABLES DE SALIDA</h3>
+                <div class="variable-list">
+                    <div class="variable-item output-var">
+                        <strong>1. Las recomendaciones personalizadas de trabajos de TI y materias de apoyo</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PCRS System -->
+        <div class="slide">
+            <h2>Variables del Sistema PCRS</h2>
+            <div class="subtitle">(Recomendador de Ruta Profesional Personalizada para Estudiantes de Ingeniería)</div>
+            
+            <div class="system-card pcrs">
+                <h3>VARIABLES DE ENTRADA</h3>
+                <div class="variable-list">
+                    <div class="variable-item input-var">
+                        <strong>1. Rendimiento Académico (Academic Performance):</strong>
+                        Calificaciones de secundaria en materias STEM (Ciencia, Tecnología, Ingeniería y Matemáticas)
+                    </div>
+                    <div class="variable-item input-var">
+                        <strong>2. Tipo de Personalidad (Personality Type):</strong>
+                        Determinada por el MBTI
+                    </div>
+                    <div class="variable-item input-var">
+                        <strong>3. Habilidades Extracurriculares e Intereses Personales:</strong>
+                        Ejemplos incluyen habilidades artísticas, habilidades relacionadas con la informática, habilidades deportivas, servicios comunitarios y voluntariado
+                    </div>
+                    <div class="variable-item input-var">
+                        <strong>4. Género (Gender):</strong>
+                        Información personal que se tiene en cuenta para correlacionarla con las tasas de empleo de las disciplinas de ingeniería en Palestina
+                    </div>
+                </div>
+
+                <h3>VARIABLES DE SALIDA</h3>
+                <div class="variable-list">
+                    <div class="variable-item output-var">
+                        <strong>1. La Tasa de Idoneidad (Suitability Rate)</strong>
+                        para cada disciplina de ingeniería (Arquitectura, Ingeniería Civil, Química, Informática, Eléctrica, Industrial y Mecánica), presentada como una lista clasificada
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen General -->
+        <div class="slide">
+            <h2>RESUMEN GENERAL</h2>
+            
+            <div class="system-card summary">
+                <div class="summary-grid">
+                    <div class="summary-column">
+                        <h4>TODAS LAS VARIABLES DE ENTRADA</h4>
+                        <ul class="summary-list">
+                            <li>Respuestas del Cuestionario de Intereses</li>
+                            <li>Consultas Predefinidas (FAQs)</li>
+                            <li>Perfiles de Trabajo (Job Profiles)</li>
+                            <li>Tipo de Personalidad MBTI</li>
+                            <li>Perfiles de Asignaturas (Subject Profiles)</li>
+                            <li>Preferencia del Usuario</li>
+                            <li>Rendimiento Académico</li>
+                            <li>Habilidades Extracurriculares e Intereses</li>
+                            <li>Género (Gender)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="summary-column">
+                        <h4>TODAS LAS VARIABLES DE SALIDA</h4>
+                        <ul class="summary-list">
+                            <li>Opciones de Carrera Recomendadas</li>
+                            <li>Detalles de la Carrera</li>
+                            <li>Recomendaciones Personalizadas de Trabajos de TI</li>
+                            <li>Recomendaciones de Materias de Apoyo (Subjects)</li>
+                            <li>Cálculo de Probabilidad Posterior</li>
+                            <li>Tasa de Idoneidad (Suitability Rate)</li>
+                            <li>Lista Clasificada de Disciplinas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Crear partículas de fondo
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const numParticles = 50;
+
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Posición aleatoria
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                
+                // Delay de animación aleatorio
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Efecto de desplazamiento suave
+        function smoothScroll() {
+            const slides = document.querySelectorAll('.slide');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            slides.forEach(slide => {
+                observer.observe(slide);
+            });
+        }
+
+        // Inicializar efectos
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            smoothScroll();
+        });
+
+        // Efecto de hover para las tarjetas de variables
+        document.querySelectorAll('.variable-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02) translateZ(0)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) translateZ(0)';
+            });
+        });
+    </script>
+</body>
+</html>
